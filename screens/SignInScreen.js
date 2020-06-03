@@ -11,6 +11,7 @@ import {
     View
 } from 'react-native';
 
+import { AuthContext } from '../components/Context';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,23 +20,25 @@ import React from 'react';
 const SignInScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
-        email: '',
+        username: '',
         password: '',
         check_textInputChange: false,
         secureTextEntry: true
     });
 
+    const { signIn } = React.useContext(AuthContext);
+
     const textInputChange = (val) => {
         if(val.length != 0) {
             setData({
                 ...data,
-                email: val,
+                username: val,
                 check_textInputChange: true
             });
         } else {
             setData({
                 ...data,
-                email: val,
+                username: val,
                 check_textInputChange: false
             });
         }
@@ -55,6 +58,10 @@ const SignInScreen = ({navigation}) => {
         });
     }
 
+    const loginHandle = (username, password) => {
+        signIn(username, password);
+    }
+
 
     return (
       <View style={styles.container}>
@@ -65,7 +72,7 @@ const SignInScreen = ({navigation}) => {
         <Animatable.View 
             animation="fadeInUpBig"
             style={styles.footer}>
-            <Text style={styles.text_footer}>Email</Text>
+            <Text style={styles.text_footer}>Username</Text>
             <View style={styles.action}>
                 <FontAwesome
                     name="user-o"
@@ -73,7 +80,7 @@ const SignInScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Email"
+                    placeholder="Your Username"
                     style={styles.textInput}
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
@@ -125,12 +132,17 @@ const SignInScreen = ({navigation}) => {
             </View>
 
             <View style={styles.button}>
-                <LinearGradient
-                    colors={['#08d4c4', '#01ab9d']}
+                <TouchableOpacity
                     style={styles.signIn}
+                    onPress={() => {loginHandle(data.username, data.password)}}
                 >
-                    <Text style={styles.textSign}>Sign In</Text>
-                </LinearGradient>
+                    <LinearGradient
+                        colors={['#08d4c4', '#01ab9d']}
+                        style={styles.signIn}
+                    >
+                        <Text style={styles.textSign}>Sign In</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                 onPress={() => navigation.navigate('SignUpScreen')}
