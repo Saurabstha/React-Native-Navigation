@@ -1,4 +1,5 @@
 import {
+    useTheme,
     Avatar,
     Caption,
     Drawer,
@@ -19,13 +20,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React from 'react';
 
 export function DrawerContent(props) {
-    const [isDarkTheme, setIsDarkTheme] = React.useState(false);
 
-    const { signOut } = React.useContext(AuthContext);
+    const paperTheme = useTheme();
 
-    const toggleTheme = () => {
-        setIsDarkTheme(!isDarkTheme);
-    }
+    const { signOut, toggleTheme } = React.useContext(AuthContext);
+
 
     return(
         <View style={{flex:1}}>
@@ -118,7 +117,7 @@ export function DrawerContent(props) {
                             <View style={styles.preference}>
                                 <Text>Dark Theme</Text>
                                 <View pointerEvents="none">
-                                    <Switch value={isDarkTheme} />
+                                    <Switch value={paperTheme.dark} />
                                 </View>
                             </View>
                         </TouchableRipple>

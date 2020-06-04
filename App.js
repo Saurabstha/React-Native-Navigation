@@ -6,15 +6,28 @@ import { AuthContext } from './components/Context';
 import BookmarkScreen from './screens/BookmarkScreen';
 import { DrawerContent } from './screens/DrawerContent';
 import MainTabScreen from './screens/MainTabScreen';
-import { NavigationContainer } from '@react-navigation/native';
+import { 
+  NavigationContainer, 
+  DefaultTheme as NavigationDefaultTheme,
+  DarkTheme as NavigationDarkTheme
+} from '@react-navigation/native';
 import RootStackScreen from './screens/RootStackScreen';
 import SettingScreen from './screens/SettingScreen';
 import SupportScreen from './screens/SupportScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
+import { 
+  Provider as PaperProvider, 
+  DefaultTheme as PaperDefaultTheme,
+  DarkTheme as PaperDarkTheme 
+} from 'react-native-paper';
+
 const Drawer = createDrawerNavigator();
 
 const App = () => {
+
+    const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+
 
 	// const[isLoading, setIsLoading] = React.useState(true);
 	// const[userToken, setUserToken] = React.useState(true);
@@ -24,6 +37,30 @@ const App = () => {
 		userName: null,
 		userToken: null
 	};
+
+	const CustomDefaultTheme = {
+	    ...NavigationDefaultTheme,
+	    ...PaperDefaultTheme,
+	    colors: {
+	      ...NavigationDefaultTheme.colors,
+	      ...PaperDefaultTheme.colors,
+	      background: '#ffffff',
+	      text: '#333333'
+	    }
+	  }
+  
+  	const CustomDarkTheme = {
+	    ...NavigationDarkTheme,
+	    ...PaperDarkTheme,
+	    colors: {
+	      ...NavigationDarkTheme.colors,
+	      ...PaperDarkTheme.colors,
+	      background: '#333333',
+	      text: '#ffffff'
+	    }
+	  }
+
+	  const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
 
 	const loginReducer = (prevState, action) => {
 		switch(action.type) {
@@ -88,6 +125,9 @@ const App = () => {
 			// setUserToken('adad');
 			// setIsLoading(false);
 		},
+		toggleTheme: () => {
+      		setIsDarkTheme( isDarkTheme => !isDarkTheme );
+    	}
 	}), []);
 
 	useEffect(() => {
@@ -113,8 +153,9 @@ const App = () => {
 	}
 
 	return (
+		<PaperProvider theme={theme}>
 		<AuthContext.Provider value={authContext}>
-		<NavigationContainer>
+		<NavigationContainer theme={theme}>
 			{loginState.userToken !== null ? (
 				<Drawer.Navigator drawerContent={props => <DrawerContent {...props} />} >
 				<Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
@@ -128,6 +169,7 @@ const App = () => {
 		}
 		</NavigationContainer>
 		</AuthContext.Provider>
+		</PaperProvider>  
 	);
 }
 
